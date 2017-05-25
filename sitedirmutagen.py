@@ -34,8 +34,8 @@ parser.add_argument("-e","--exonfile",
                     help="File Containing reference Exon FASTA sequences. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_exon_seq.fa'", default= "docs/ex_exon_seq.fa")
 parser.add_argument("-i", "--isoform", default="docs/ex_isoform.txt",
                     help="List of possible isoforms file. Defaults to 'docs/ex_isoform.txt'")
-parser.add_argument("-snv", "--snvinfo", default="ex_snvinfo.txt",
-                    help="File containing SNV info (Name, Position, Variants), as shown in snvinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_snvinfo.txt'")
+parser.add_argument("-snv", "--snvinfo", default="docs/ex_snvinfo.txt",
+                    help="File containing SNV info (Name, Position, Variants), as shown in docs/snvinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_snvinfo.txt'")
 parser.add_argument("-o", "--output", default="docs/site_dir_mutagen_output.txt",
                     help="Outputfile containing Oligos for each specified SNV within the context of the CDS. Defaults to 'docs/site_dir_mutagen_output.txt'")
 parser.add_argument("-ol", "--oligolen", default=21,

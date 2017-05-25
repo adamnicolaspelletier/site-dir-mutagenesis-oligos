@@ -14,4 +14,23 @@ The PCR generates a linear version of the vector that can then be ligated.
 
 Simple and efficient.
 
-Use the -h flag for further options
+
+Requirements:
+  - Python Libraries :
+
+	Pandas (+ Numpy)
+	BioPython
+
+ - Exon FASTA sequences for genes or transcripts of interest. 
+ - List of transcripts to include in analysis
+ - Variant info (Name, Position, Strand) as supplied in docs/ex_snvinfo.txt
+
+
+
+Use the -h flag for further options and help
+
+
+
+
+BUGS:
+If you find a bug or have a suggestion please end your informations to adam.nicolas.pelletier@gmail.com
