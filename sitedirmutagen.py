@@ -31,17 +31,17 @@ Supply FASTAS files for Genes and CDS (Coding Sequence), the variant info as sho
 ## !!Add metadata in header for filenames, date, command used (" python sitedirmutagene.py -fg "fastagene.fa" -fc fastacds.fa etc")
 
 parser.add_argument("-e","--exonfile",
-                    help="File Containing reference Exon FASTA sequences. Can be obtained from BioMart, or other sources. Defaults to 'ex_exon_seq.fa'", default= "ex_exon_seq.fa")
-parser.add_argument("-i", "--isoform", default="ex_isoform.txt",
-                    help="List of possible isoforms file. Defaults to 'ex_isoform.txt'")
+                    help="File Containing reference Exon FASTA sequences. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_exon_seq.fa'", default= "docs/ex_exon_seq.fa")
+parser.add_argument("-i", "--isoform", default="docs/ex_isoform.txt",
+                    help="List of possible isoforms file. Defaults to 'docs/ex_isoform.txt'")
 parser.add_argument("-snv", "--snvinfo", default="ex_snvinfo.txt",
-                    help="File containing SNV info (Name, Position, Variants), as shown in snvinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'ex_snvinfo.txt'")
-parser.add_argument("-o", "--output", default="site_dir_mutagen_output.txt",
-                    help="Outputfile containing Oligos for each specified SNV within the context of the CDS. Defaults to 'site_dir_mutagen_output.txt'")
+                    help="File containing SNV info (Name, Position, Variants), as shown in snvinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_snvinfo.txt'")
+parser.add_argument("-o", "--output", default="docs/site_dir_mutagen_output.txt",
+                    help="Outputfile containing Oligos for each specified SNV within the context of the CDS. Defaults to 'docs/site_dir_mutagen_output.txt'")
 parser.add_argument("-ol", "--oligolen", default=21,
                     help="Length of Forward and Reverse Oligos for SDM. Defaults to 21")
-parser.add_argument("-sf", "--snvfasta", default="VARIANT_FASTA/",
-                    help="Directory for Variant CDS FASTA files per gene. Requires 'y' when user is prompted. Will create dircetory if it does not exist. Defaults to VARIANT_FASTA/")
+parser.add_argument("-sf", "--snvfasta", default="docs/VARIANT_FASTA/",
+                    help="Directory for Variant CDS FASTA files per gene. Requires 'y' when user is prompted. Will create dircetory if it does not exist. Defaults to docs/VARIANT_FASTA/")
 
 args = parser.parse_args()
 
