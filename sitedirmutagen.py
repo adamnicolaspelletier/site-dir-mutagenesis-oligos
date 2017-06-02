@@ -3,7 +3,7 @@
 ###                                            -*- Mode: Python -*-
 ###                                            -*- coding UTF-8 -*-
 ### sitedirmutagen.py
-### Copyright 2015 Institut de Recherche en Immunologie et Cancerologie (IRIC)
+### Copyright 2017 Institut de Recherche en Immunologie et Cancerologie (IRIC)
 ### Author :  Adam-Nicolas Pelletier
 ### Last modified On: 2017-05-24
 
@@ -16,17 +16,17 @@ import time
 
 pd.options.mode.chained_assignment = None  # default='warn
 
-##Goal: to take snv data and design oligos for site directed mutagenesis on WT vectors. 
+##Goal: to take variant data and design oligos for site directed mutagenesis on WT vectors. 
 
 
 
 
 parser = argparse.ArgumentParser(description="""Generate oligos for site directed mutagenesis with a Q5 Phusion-type home-made approach in an automated fashion
 
-Script for localizing a given SNV based on its genomic context in the intended CCDS, then generate oligos using the Q5 approach: 
-SNV is in the middle of the F oligo, with at least 10 bases on both sides, and the R oligo is actually on the opposite strand BEFORE the F oligo
+Script for localizing a given variant based on its genomic context in the intended CCDS, then generate oligos using the Q5 approach: 
+variant is in the middle of the F oligo, with at least 10 bases on both sides, and the R oligo is actually on the opposite strand BEFORE the F oligo
 
-Supply FASTAS files for Genes and CDS (Coding Sequence), the variant info as shown in the snvinfo.txt file, """ )
+Supply FASTAS files for Genes and CDS (Coding Sequence), the variant info as shown in the variantinfo.txt file, """ )
 
 ## !!Add metadata in header for filenames, date, command used (" python sitedirmutagene.py -fg "fastagene.fa" -fc fastacds.fa etc")
 
@@ -34,39 +34,39 @@ parser.add_argument("-e","--exonfile",
                     help="File Containing reference Exon FASTA sequences. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_exon_seq.fa'", default= "docs/ex_exon_seq.fa")
 parser.add_argument("-i", "--isoform", default="docs/ex_isoform.txt",
                     help="List of possible isoforms file. Defaults to 'docs/ex_isoform.txt'")
-parser.add_argument("-snv", "--snvinfo", default="docs/ex_snvinfo.txt",
-                    help="File containing SNV info (Name, Position, Variants), as shown in docs/snvinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_snvinfo.txt'")
+parser.add_argument("-v", "--variantinfo", default="docs/ex_variantinfo.txt",
+                    help="File containing variant info (Name, Position, Variants), as shown in docs/variantinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_variantinfo.txt'")
 parser.add_argument("-o", "--output", default="docs/site_dir_mutagen_output.txt",
-                    help="Outputfile containing Oligos for each specified SNV within the context of the CDS. Defaults to 'docs/site_dir_mutagen_output.txt'")
+                    help="Outputfile containing Oligos for each specified variant within the context of the CDS. Defaults to 'docs/site_dir_mutagen_output.txt'")
 parser.add_argument("-ol", "--oligolen", default=21,
                     help="Length of Forward and Reverse Oligos for SDM. Defaults to 21")
-parser.add_argument("-sf", "--snvfasta", default="docs/VARIANT_FASTA/",
-                    help="Directory for Variant CDS FASTA files per gene. Requires 'y' when user is prompted. Will create dircetory if it does not exist. Defaults to docs/VARIANT_FASTA/")
-
+parser.add_argument("-vf", "--variantfasta", default="docs/VARIANT_FASTA/",
+                    help="Directory for Variant CDS FASTA files per gene. Requires -sf flag. Will create dircetory if it does not exist. Defaults to docs/VARIANT_FASTA/")
+parser.add_argument("-sf", "--savefasta", action="store_true",
+                    help="Activates save fasta mode, to allow the script to output the FASTA sequence of the difference variants to the -vf flag directory")
 args = parser.parse_args()
 
 
 exonfile = args.exonfile
 isoform = args.isoform
-snvinfo = args.snvinfo
+variantinfo = args.variantinfo
 output = args.output
 oligolen = args.oligolen
-snvfasta = args.snvfasta
+variantfasta = args.variantfasta
+savefasta = args.savefasta
+
 
 print "\nsitedirectedmutagen.py script for automating mutagenesis oligo generating in high-throughput experiments\n"
 print " ** use the -h flag for detailed help on how to use this script **\n"
 
-# Prompt user for exporting Variant CDS FASTA sequences to the VARIANT_FASTA directory
-varfasta = raw_input("Save Variant CDS FASTA sequences?  (y/n):  ")
-
 
 print "\n\nUsing %s for Reference Exon FASTA ..." % exonfile
 print "Using %s for Possible Isoforms File ..." % isoform
-print "Using %s for Additional SNV Information ..." % snvinfo
+print "Using %s for Additional Variant Information ..." % variantinfo
 print "Using %s for Output file ..." % output
 print "Using %s for Oligo Length ..." % oligolen
-if varfasta.upper() == "Y":
-    print "Using %s directory for Variant FASTA files  ... " % snvfasta
+if savefasta == True:
+    print "Using %s directory for Variant FASTA files  ... " % variantfasta
 else:
     print "Not Saving Variant CDS FASTA sequences..."
 
@@ -91,13 +91,13 @@ def reversecomp(rprimsequence): ## make a complement version of the sequence, an
 
 
 
-snvinfodf = pd.read_csv(snvinfo, sep = "\t")    ## Read SNVinfo in pandas dataframe
+variantinfodf = pd.read_csv(variantinfo, sep = "\t")    ## Read variantinfo in pandas dataframe
 isoforms = open(isoform).read().splitlines()  ## Make list of isoforms
-snvinfodf2 = snvinfodf[snvinfodf["Ensembl Transcript ID"].isin(isoforms)]  #Filter SNV info based on selected isoforms
+variantinfodf2 = variantinfodf[variantinfodf["Ensembl Transcript ID"].isin(isoforms)]  #Filter variant info based on selected isoforms
 
 
-snvinfodf2["index"] = range(len(snvinfodf2))
-snvinfodf2 = snvinfodf2.set_index("index")  #reindex after filtering, to facilitate .iloc indexing
+variantinfodf2["index"] = range(len(variantinfodf2))
+variantinfodf2 = variantinfodf2.set_index("index")  #reindex after filtering, to facilitate .iloc indexing
 
 
 #Create  temporary file to output preliminary data. 
@@ -119,23 +119,23 @@ for record in SeqIO.parse(exonfile, "fasta"):
 exondb = pd.DataFrame(exontotal, columns=titles)
 
 try:
-    os.makedirs(snvfasta)
+    os.makedirs(variantfasta)
 except OSError:
-    if not os.path.isdir(snvfasta):
+    if not os.path.isdir(variantfasta):
         raise 
 
-if varfasta.upper() == "Y":
-    genelist = list(snvinfodf2["GENENAME"].unique())
+if savefasta == True:
+    genelist = list(variantinfodf2["GENENAME"].unique())
     for i in genelist:  
-        insertfile = "%s%s.txt" % (snvfasta,i)
-        with open(insertfile, "w") as snvfastaoutput:
-            snvfastaoutput.write("")
+        insertfile = "%s%s.txt" % (variantfasta,i)
+        with open(insertfile, "w") as variantfastaoutput:
+            variantfastaoutput.write("")
         
 
 
 ## Progress Count for oligo design
 progress = 1.0
-totalprog = float(len(snvinfodf2))
+totalprog = float(len(variantinfodf2))
 
 ### Lists of Forward, Reverse and 
 fwdprimer = []
@@ -143,15 +143,15 @@ revprimer = []
 
 
 ### 
-for i in xrange(len(snvinfodf2["Variation Name"])):  #Iterate though all SNVs in SNV DataFrame. 
+for i in xrange(len(variantinfodf2["Variation Name"])):  #Iterate though all variants in variant DataFrame. 
     
     try:
-        # start = int(snvinfodf2.iloc[i]["Gene_start"])
-        geneid = snvinfodf2.iloc[i]["Ensembl Gene ID"]
-        snvpos =  int(snvinfodf2.iloc[i]["Position on Chromosome (bp)"])
+        # start = int(variantinfodf2.iloc[i]["Gene_start"])
+        geneid = variantinfodf2.iloc[i]["Ensembl Gene ID"]
+        variantpos =  int(variantinfodf2.iloc[i]["Position on Chromosome (bp)"])
 
-        exondbfilt = exondb[exondb["EnsGeneID"]==geneid] #filter Exon dataframe to the gene associated with the SNV in the current iteration
-        exonsnvdf = exondbfilt[(exondbfilt["Exonstart"]<snvpos) & (exondbfilt["Exonstop"]>snvpos)] # Filter the Exon DF to the Exon that fits the genome coordinates
+        exondbfilt = exondb[exondb["EnsGeneID"]==geneid] #filter Exon dataframe to the gene associated with the variant in the current iteration
+        exonvariantdf = exondbfilt[(exondbfilt["Exonstart"]<variantpos) & (exondbfilt["Exonstop"]>variantpos)] # Filter the Exon DF to the Exon that fits the genome coordinates
         
 
         original = ""
@@ -162,16 +162,16 @@ for i in xrange(len(snvinfodf2["Variation Name"])):  #Iterate though all SNVs in
             original += str(exseq.iloc[0]["Sequence"])
 
 
-        if snvinfodf2.iloc[i]["Gene_strand"] == -1: ## Variants are always on the + strand: if gene is on the - strand, reverse complement genesequence to fit SNV properly. 
-            mutlist = list(reversecomp((exonsnvdf.iloc[0]["Sequence"])))
-            mutlist[(snvpos-exonsnvdf.iloc[0]["Exonstart"])] = snvinfodf2.iloc[i]["Variant_allele"] # replace 
+        if variantinfodf2.iloc[i]["Gene_strand"] == -1: ## Variants are always on the + strand: if gene is on the - strand, reverse complement genesequence to fit variant properly. 
+            mutlist = list(reversecomp((exonvariantdf.iloc[0]["Sequence"])))
+            mutlist[(variantpos-exonvariantdf.iloc[0]["Exonstart"])] = variantinfodf2.iloc[i]["Variant_allele"] # replace 
             mutantseq = reversecomp("".join(mutlist)) #mutated exon
-            mutant = original.replace(exonsnvdf.iloc[0]["Sequence"], mutantseq) # replace the mutated exon in the original sequence
+            mutant = original.replace(exonvariantdf.iloc[0]["Sequence"], mutantseq) # replace the mutated exon in the original sequence
         else:
-            mutlist= list((exonsnvdf.iloc[0]["Sequence"]))
-            mutlist[(snvpos-exonsnvdf.iloc[0]["Exonstart"])] = snvinfodf2.iloc[i]["Variant_allele"]
+            mutlist= list((exonvariantdf.iloc[0]["Sequence"]))
+            mutlist[(variantpos-exonvariantdf.iloc[0]["Exonstart"])] = variantinfodf2.iloc[i]["Variant_allele"]
             mutantseq = "".join(mutlist) #mutated exon
-            mutant = original.replace((exonsnvdf.iloc[0]["Sequence"]),mutantseq) # replace the mutated exon in the original sequence
+            mutant = original.replace((exonvariantdf.iloc[0]["Sequence"]),mutantseq) # replace the mutated exon in the original sequence
 
 
         if oligolen % 2 == 0:
@@ -191,36 +191,38 @@ for i in xrange(len(snvinfodf2["Variation Name"])):  #Iterate though all SNVs in
         
 
 
-        genename = snvinfodf2.iloc[i]["GENENAME"]
+        genename = variantinfodf2.iloc[i]["GENENAME"]
         ### if User chose to output the Variant FASTA sequences to specified directory only
-        if varfasta.upper() == "Y":
+        if savefasta == True:
             try:
                 currdate = time.strftime("%d/%m/%Y")
-                snvfastafile = "%s%s.txt" % (snvfasta,genename)
-                if os.stat(snvfastafile).st_size == 0: # if specified file is empty add Reference Consensus sequence
-                    out = ">"+ str(snvinfodf2.iloc[i]["Ensembl Gene ID"])+ "|"+ str(snvinfodf2.iloc[i]["Ensembl Transcript ID"])+ "|" + \
-                    str(snvinfodf2.iloc[i]["GENENAME"])+ "|"+ "Date: " + str(currdate) + "|"+ "sitedirmutagen.py" + "|"+ snvinfo + "|"+ exonfile + "|" + \
+                variantfastafile = "%s%s.txt" % (variantfasta,genename)
+                if os.stat(variantfastafile).st_size == 0: # if specified file is empty add Reference Consensus sequence
+                    out = ">"+ str(variantinfodf2.iloc[i]["Ensembl Gene ID"])+ "|"+ str(variantinfodf2.iloc[i]["Ensembl Transcript ID"])+ "|" + \
+                    str(variantinfodf2.iloc[i]["GENENAME"])+ "| REFERENCE | Date: " + str(currdate) + "|"+ "sitedirmutagen.py" + "|"+ variantinfo + "|"+ exonfile + "|" + \
                     isoform + "\n" + original +"\n"
-                    with open(snvfastafile, "a") as tempoutput:
+                    with open(variantfastafile, "a") as tempoutput:
                         tempoutput.write(out)
 
-                with open(snvfastafile, "a") as tempoutput: # append variant fasta sequences
-                    tempoutput.write(">"+ str(snvinfodf2.iloc[i]["Variation Name"])+ "\n" + mutant +"\n")
+                with open(variantfastafile, "a") as tempoutput: # append variant fasta sequences
+                    out = ">"+ str(variantinfodf2.iloc[i]["Variation Name"])+ "|"+ str(variantinfodf2.iloc[i]["Ensembl Gene ID"]) + "|"+ \
+                    str(variantinfodf2.iloc[i]["Ensembl Transcript ID"]) + "|"+ str(variantinfodf2.iloc[i]["GENENAME"]) + "\n" + mutant +"\n"
+                    tempoutput.write(out)
 
             except IOError:
                 sequenced.append("NO")
 
-        print str(progress) , snvinfodf2.iloc[i]["Variation Name"], "DONE", str(progress/totalprog*100) , "%" ## Progress report on total SNV list
+        print str(progress) , variantinfodf2.iloc[i]["Variation Name"], "DONE", str(progress/totalprog*100) , "%" ## Progress report on total variant list
 
 
     except IndexError:
-        print str(progress) , snvinfodf2.iloc[i]["Variation Name"], "NOT FOUND INSIDE CODING EXON OF CHOSEN TRANSCRIPT" , str(progress/totalprog*100) , "%"
+        print str(progress) , variantinfodf2.iloc[i]["Variation Name"], "NOT FOUND INSIDE CODING EXON OF CHOSEN TRANSCRIPT" , str(progress/totalprog*100) , "%"
         fwdprimer.append("---")
         revprimer.append("---")
     progress += 1
         
 
 
-snvinfodf2["FWD_Primer"] = fwdprimer
-snvinfodf2["REV_Primer"] = revprimer
-snvinfodf2.to_csv(output, sep='\t')  # add oligos to dataframe and output the dataframe to specified file 
+variantinfodf2["FWD_Primer"] = fwdprimer
+variantinfodf2["REV_Primer"] = revprimer
+variantinfodf2.to_csv(output, sep='\t')  # add oligos to dataframe and output the dataframe to specified file 
