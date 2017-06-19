@@ -30,18 +30,20 @@ Supply FASTAS files for Genes and CDS (Coding Sequence), the variant info as sho
 
 ## !!Add metadata in header for filenames, date, command used (" python sitedirmutagene.py -fg "fastagene.fa" -fc fastacds.fa etc")
 
+cwd = os.path.dirname(os.path.realpath(__file__))
+
 parser.add_argument("-e","--exonfile",
                     help="File Containing reference Exon FASTA sequences. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_exon_seq.fa'", default= "docs/ex_exon_seq.fa")
-parser.add_argument("-i", "--isoform", default="docs/ex_isoform.txt",
+parser.add_argument("-i", "--isoform", default=str(cwd)+"docs/ex_isoform.txt",
                     help="List of possible isoforms file. Defaults to 'docs/ex_isoform.txt'")
-parser.add_argument("-v", "--variantinfo", default="docs/ex_variantinfo.txt",
+parser.add_argument("-v", "--variantinfo", default=str(cwd)+"docs/ex_variantinfo.txt",
                     help="File containing variant info (Name, Position, Variants), as shown in docs/variantinfo.txt. Can be obtained from BioMart, or other sources. Defaults to 'docs/ex_variantinfo.txt'")
-parser.add_argument("-o", "--output", default="docs/site_dir_mutagen_output.txt",
+parser.add_argument("-o", "--output", default=str(cwd)+"docs/site_dir_mutagen_output.txt",
                     help="Outputfile containing Oligos for each specified variant within the context of the CDS. Defaults to 'docs/site_dir_mutagen_output.txt'")
 parser.add_argument("-ol", "--oligolen", default=21,
                     help="Length of Forward and Reverse Oligos for SDM. Defaults to 21")
-parser.add_argument("-vf", "--variantfasta", default="docs/VARIANT_FASTA/",
-                    help="Directory for Variant CDS FASTA files per gene. Requires -sf flag. Will create dircetory if it does not exist. Defaults to docs/VARIANT_FASTA/")
+parser.add_argument("-vf", "--variantfasta", default=str(cwd)+"docs/VARIANT_FASTA/",
+                    help="Directory for Variant CDS FASTA files per gene. Requires -sf flag. Will create directory if it does not exist. Defaults to docs/VARIANT_FASTA/")
 parser.add_argument("-sf", "--savefasta", action="store_true",
                     help="Activates save fasta mode, to allow the script to output the FASTA sequence of the difference variants to the -vf flag directory")
 args = parser.parse_args()

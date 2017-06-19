@@ -1,0 +1,11 @@
+#ignore testing dir
+docs/testing
+
+.DS_Store
+
+.goutputstream-MWXY0Y
+sitedirmutagenquik.py
+
+
+docs/testing
+docs/ex_variantinfoTF.txt
