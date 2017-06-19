@@ -8,10 +8,10 @@ Generate oligos for site directed mutagenesis with a Q5 Phusion-type home-made a
 
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Information] (#information)
+- [Information](#information)
 - [Usage](#usage)
-- [In Development](#in development)
-- [Known Bugs](#known bugs)
+- [In Development](#in-development)
+- [Known Bugs](#known-bugs)
 - [Support](#support)
 - [Contributing](#contributing)
 
@@ -79,7 +79,7 @@ python sitedirmutagen.py -e path/to/your/exonfile.fa -i path/to/your/isoformfile
 ```
 
 
-You can also specify the name of the outputfile you wish to generate for oligos with the -o flag
+You can also specify the name of the outputfile you wish to generate for oligos with the -o flag. Otherwise, it will be directed to "docs/site_dir_mutagen_output.txt" by default.
 
 ```sh
 
@@ -90,6 +90,7 @@ python sitedirmutagen.py -o path/to/your/outputfile.txt
 
 The script also allows to generate the FASTA sequence for the variants in the variant Info file, for use in sequencing alignment purposes. 
 One must first 1. Activate Fasta mode with the -sf flag and then 2. indicate in which directory save those FASTA files with the -vf flag.
+The default directory will be "docs/VARIANT_FASTA/" if only -sf is used. 
 
 ```sh
 
@@ -102,7 +103,7 @@ Use the -h flag for further options and help
 
 
 ## In Development
-
+Nothing at the moment, open for ideas!
 
 
 ## Known Bugs
