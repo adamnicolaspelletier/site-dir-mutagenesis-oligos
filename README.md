@@ -66,7 +66,7 @@ However, to do so,it requires information:
 ```sh
 
 	python sitedirmutagen.py -e path/to/my/exonfastafile.fa -f 
-
+com
 ```
 
 
