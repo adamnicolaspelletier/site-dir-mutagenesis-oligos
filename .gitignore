@@ -1,0 +1,16 @@
+# Compiled python modules
+*.pyc
+
+docs/VARIANT_FASTA/
+
+docs/site_dir_mutagen_output.txt
+docs/testing/
+sitedirmutagenquik.py
+tempoutput.txt
+.goutputstream-MWXY0Y
+
+
+
+.DS_Store
+
+
