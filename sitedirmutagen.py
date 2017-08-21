@@ -65,13 +65,11 @@ savefasta = args.savefasta
 print "\nsitedirectedmutagen.py script for automating mutagenesis oligo generating in high-throughput experiments\n"
 print " ** use the -h flag for detailed help on how to use this script **\n"
 
-<<<<<<< HEAD
-=======
 
 # Prompt user for exporting Variant CDS FASTA sequences to the VARIANT_FASTA directory
 varfasta = raw_input("Save Variant CDS FASTA sequences?  (y/n):  ")
 
->>>>>>> development
+
 
 print "\n\nUsing %s for Reference Exon FASTA ..." % exonfile
 print "Using %s for Possible Isoforms File ..." % isoform
