@@ -97,6 +97,7 @@ Please include a trailing / after the end of the variant fasta file directory
 ```
 
 
+Use the -h flag for further options and help
 
 
 
@@ -116,9 +117,6 @@ Please [open an issue](https://github.com/adamnicolaspelletier/site-dir-mutagene
 ## Contributing
 
 Please contribute using [Github Flow](https://guides.github.com/introduction/flow/). Create a branch, add commits, and [open a pull request](https://github.com/adamnicolaspelletier/site-dir-mutagenesis-oligos/compare/).
-
-
-Use the -h flag for further options and help
 
 
 
