@@ -13,6 +13,8 @@ import pandas as pd
 from Bio import SeqIO
 import argparse
 import time 
+from adamP_BioTools.dna_tools import *
+from adamP_BioTools.os_handling import path_validity
 
 pd.options.mode.chained_assignment = None  # default='warn
 
@@ -20,6 +22,8 @@ pd.options.mode.chained_assignment = None  # default='warn
 
 
 
+########################################################################################################################################################
+########################################################## USER INPUT ##################################################################################
 
 parser = argparse.ArgumentParser(description="""Generate oligos for site directed mutagenesis with a Q5 Phusion-type home-made approach in an automated fashion
 
@@ -61,6 +65,13 @@ savefasta = args.savefasta
 print "\nsitedirectedmutagen.py script for automating mutagenesis oligo generating in high-throughput experiments\n"
 print " ** use the -h flag for detailed help on how to use this script **\n"
 
+<<<<<<< HEAD
+=======
+
+# Prompt user for exporting Variant CDS FASTA sequences to the VARIANT_FASTA directory
+varfasta = raw_input("Save Variant CDS FASTA sequences?  (y/n):  ")
+
+>>>>>>> development
 
 print "\n\nUsing %s for Reference Exon FASTA ..." % exonfile
 print "Using %s for Possible Isoforms File ..." % isoform
@@ -74,22 +85,21 @@ else:
 
 print "\n\n"
 
+########################################################################################################################################################
+########################################################################################################################################################
 
 
-def reversecomp(rprimsequence): ## make a complement version of the sequence, and reverse it so it has the proper orientation
-    a = ""
-    tempzrev = rprimsequence
-    tempzrev = tempzrev.replace("T","X")
-    tempzrev = tempzrev.replace("A","T")
-    tempzrev = tempzrev.replace("X","A")
-    tempzrev = tempzrev.replace("C","Y")
-    tempzrev = tempzrev.replace("G","C")
-    tempzrev = tempzrev.replace("Y","G")
-    templist = list(tempzrev)
-    templist.reverse()
-    for i in templist:
-        a += i
-    return a
+#file verification step. Although not necessary in most cases, it is frustrating to get an OSError for trying to export the output to a file halfway through a long loop.
+if path_validity(exonfile) == False:
+    raise OSError("Invalid file or directory: %s" % exonfile) 
+elif path_validity(isoform) == False:
+    raise OSError("Invalid file or directory: %s" % isoform) 
+elif path_validity(snvinfo) == False:
+    raise OSError("Invalid file or directory: %s" % snvinfo) 
+elif path_validity(output) == False:
+    raise OSError("Invalid file or directory: %s" % output) 
+
+
 
 
 
